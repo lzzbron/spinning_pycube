@@ -7,8 +7,8 @@ a, b, c = 0, 0, 0
 cubeWidth = 20
 background = " "
 width, height = 160, 44
-buffer = (width * height)
-z_buffer = (width * height)
+buffer = []
+z_buffer = []
 
 distance = 100
 K1 = 40
