@@ -12,10 +12,10 @@ z_buffer = []
 
 distance = 100
 K1 = 40
-horizontalOffset = 20
+horizontalOffset = 0
 
 
-incrementSpeed = 0.6
+incrementSpeed = 0.95
 
 def calculateX(i, j, k):
     return(
@@ -45,11 +45,10 @@ def calcForSurface(cubeX, cubeY, cubeZ, ch):
 
     if (0 <= xp < width and 0 <= yp < height):
         idx = xp + yp * width
-
-    if (0 <= idx < len(z_buffer)):
-        if (ooz > z_buffer[idx]):
-            z_buffer[idx] = ooz
-            buffer[idx]= ch
+        if (0 <= idx < len(z_buffer)):
+            if (ooz > z_buffer[idx]):
+                z_buffer[idx] = ooz
+                buffer[idx]= ch
     
     #print(f"DEBUG: xp={xp}, yp={yp}, z={z}, ooz={ooz}")
 
@@ -59,37 +58,40 @@ def main():
     print("\x1b[23]")
     while(True):
         global a, b, c
+        global buffer, z_buffer
         buffer = [background] * (width * height)
         z_buffer = [0.0] * (width * height)
         
-        cubeWidth = 20
+        cubeWidth = 23
         horizontalOffset = -2 * cubeWidth
         #first cube
         cubeX = -cubeWidth
         while (cubeX < cubeWidth):
             cubeY = -cubeWidth
+
             while (cubeY < cubeWidth):
                 calcForSurface(cubeX, cubeY, -cubeWidth, '@')
-                calcForSurface(cubeWidth, cubeY, cubeX, '$')
+                calcForSurface(cubeWidth, cubeY, cubeX, '*')
                 calcForSurface(-cubeWidth, cubeY, -cubeX, '~')
                 calcForSurface(-cubeX, cubeY, cubeWidth, '#')
                 calcForSurface(cubeX, -cubeWidth, -cubeY, ';')
-                calcForSurface(cubeX, cubeWidth, cubeY, '+') 
+                calcForSurface(cubeX, cubeWidth, cubeY, '+')      
                 cubeY += incrementSpeed
+            cubeX += incrementSpeed
+
         print("\x1b[H")
         k = int(0)
         while (k < (width*height)):
-            if k % width != 0:
-                print(buffer[k], end="")
-            else:
-                print("\n", end="")
-            k += 1 
+            row_ch = buffer[k:k+width]
+            row_str = "".join(row_ch)
+            print(row_str)
+
+            k += width
 
         a += 0.05
         b += 0.05
         c += 0.01
-        time.sleep(0.032)
+        time.sleep(0.008)
     
     return 0
-
 main()
